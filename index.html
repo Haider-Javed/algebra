@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Game - Fall in Love with Mathematics</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <canvas id="bg-canvas"></canvas>
+    
+    <div id="app">
+        <!-- Home Screen -->
+        <section id="screen-home" class="screen active">
+            <div class="content-box glass">
+                <h1 class="title">Ready to fall in love with mathematics</h1>
+                <p class="subtitle">Play • Learn • Enjoy</p>
+                <div class="button-group">
+                    <button class="btn primary" onclick="game.showScreen('level-selection')">Play</button>
+                    <button class="btn secondary" onclick="game.showScreen('about')">About Game</button>
+                    <button class="btn danger" onclick="window.close()">Exit</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Level Selection -->
+        <section id="screen-level-selection" class="screen">
+            <div class="content-box glass">
+                <h2>Select one of these to start</h2>
+                <div class="button-group">
+                    <button class="btn primary" onclick="game.startArithmetic()">Arithmetic</button>
+                    <button class="btn primary" onclick="game.showScreen('algebra-topics')">Algebra</button>
+                </div>
+                <button class="btn-back" onclick="game.showScreen('home')">Back</button>
+            </div>
+        </section>
+
+        <!-- About Screen -->
+        <section id="screen-about" class="screen">
+            <div class="content-box glass overlay">
+                <h2>About This Game</h2>
+                <div class="text-content">
+                    <p>Explore fun, interactive puzzles designed to make you fall in love with mathematics.</p>
+                    <ul>
+                        <li>Practice core concepts with game-like mechanics</li>
+                        <li>Earn rewards and track progress</li>
+                        <li>Designed for learners of all ages</li>
+                    </ul>
+                    <p class="hint-text">Click anywhere outside or the back button to close.</p>
+                </div>
+                <button class="btn-back" onclick="game.showScreen('home')">Back</button>
+            </div>
+        </section>
+
+        <!-- Arithmetic Quiz -->
+        <section id="screen-arithmetic" class="screen">
+            <div class="content-box glass">
+                <div class="header-row">
+                    <button class="btn-back" onclick="game.showScreen('level-selection')">Back</button>
+                    <h2>Arithmetic Practice</h2>
+                    <div class="score-display">Score: <span id="arithmetic-score">0</span></div>
+                </div>
+                
+                <div class="difficulty-selector">
+                    <button class="btn-chip active" data-diff="EASY" onclick="game.setArithmeticDifficulty('EASY')">Easy</button>
+                    <button class="btn-chip" data-diff="MEDIUM" onclick="game.setArithmeticDifficulty('MEDIUM')">Medium</button>
+                    <button class="btn-chip" data-diff="HARD" onclick="game.setArithmeticDifficulty('HARD')">Hard</button>
+                </div>
+
+                <div class="question-area">
+                    <div id="arithmetic-question" class="big-text">1 + 1 = ?</div>
+                </div>
+
+                <div class="input-area">
+                    <input type="number" id="arithmetic-input" placeholder="?" onkeydown="if(event.key === 'Enter') game.submitArithmetic()">
+                    <button class="btn-hint" onclick="game.useHint()">Hint</button>
+                </div>
+
+                <div id="arithmetic-feedback" class="feedback-area"></div>
+
+                <div class="action-buttons">
+                    <button id="btn-arithmetic-submit" class="btn success" onclick="game.submitArithmetic()">Submit</button>
+                    <button id="btn-arithmetic-next" class="btn primary hidden" onclick="game.nextArithmetic()">Next Question</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Algebra Topics -->
+        <section id="screen-algebra-topics" class="screen">
+            <div class="content-box glass">
+                <h2>Select the algebra topic</h2>
+                <div class="button-group">
+                    <button class="btn primary" onclick="game.showScreen('algebra-diff')">Algebraic Operations</button>
+                    <button class="btn primary" onclick="game.startEquationQuiz()">Algebraic Equations</button>
+                    <button class="btn secondary" onclick="game.startNotes()">Algebra Notes</button>
+                </div>
+                <button class="btn-back" onclick="game.showScreen('level-selection')">Back</button>
+            </div>
+        </section>
+
+        <!-- Algebra Difficulty -->
+        <section id="screen-algebra-diff" class="screen">
+            <div class="content-box glass">
+                <h2>Select Difficulty</h2>
+                <div class="button-group">
+                    <button class="btn primary" onclick="game.startAlgebraQuiz('EASY')">Easy</button>
+                    <button class="btn primary" onclick="game.startAlgebraQuiz('MEDIUM')">Medium</button>
+                    <button class="btn primary" onclick="game.startAlgebraQuiz('HARD')">Hard</button>
+                </div>
+                <button class="btn-back" onclick="game.showScreen('algebra-topics')">Back</button>
+            </div>
+        </section>
+
+        <!-- Algebra Quiz (Operations & Equations shared UI) -->
+        <section id="screen-algebra-quiz" class="screen">
+            <div class="content-box glass">
+                <div class="header-row">
+                    <button class="btn-back" onclick="game.backFromAlgebraQuiz()">Back</button>
+                    <h2 id="algebra-quiz-title">Algebra Practice</h2>
+                </div>
+
+                <div class="question-card">
+                    <div id="algebra-question" class="big-text">2x + 3x = ?</div>
+                </div>
+
+                <div class="algebra-input-container">
+                    <label>Your answer:</label>
+                    <div id="algebra-input-display" class="custom-input"></div>
+                </div>
+
+                <div id="algebra-keypad" class="keypad">
+                    <!-- Keys generated by JS -->
+                </div>
+
+                <div id="algebra-feedback" class="feedback-area"></div>
+
+                <div class="action-buttons">
+                    <button id="btn-algebra-submit" class="btn success" onclick="game.submitAlgebra()">Submit</button>
+                    <button id="btn-algebra-next" class="btn primary hidden" onclick="game.nextAlgebra()">Next Question</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Algebra Notes -->
+        <section id="screen-algebra-notes" class="screen">
+            <div class="content-box glass wide">
+                <div class="header-row">
+                    <button class="btn-back" onclick="game.showScreen('algebra-topics')">Back</button>
+                    <h2>Algebra Notes</h2>
+                </div>
+                
+                <div id="notes-content" class="notes-body">
+                    <!-- Content injected by JS -->
+                </div>
+
+                <div class="pagination">
+                    <button class="btn small" onclick="game.prevNote()">Previous</button>
+                    <span id="note-page-indicator">Page 1 of 3</span>
+                    <button class="btn small" onclick="game.nextNote()">Next</button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
